@@ -5,13 +5,28 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>$(AssemblyName)</Authors>
-    <Title>PancakeSwapContractApi</Title>
+    <Authors>viknsagit</Authors>
+    <Title>PancakeSwapNET</Title>
+    <RepositoryUrl>https://github.com/viknsagit/PancakeSwapNET</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<RepositoryType>git</RepositoryType>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<Company>viknsagit</Company>
+	<PackageTags>.net,netherium,pancakeswap</PackageTags>
+
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Nethereum.Contracts" Version="4.14.0" />
     <PackageReference Include="Nethereum.Web3" Version="4.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

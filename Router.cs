@@ -1052,6 +1052,13 @@ namespace PancakeSwapNET
             return address;
         }
 
+        public async Task<string> GetFactoryAddress()
+        {
+            Function function = _contract.GetFunction("factory");
+            string address = await function.CallAsync<string>();
+            return address;
+        }
+
         public async Task<TransactionReceipt> SwapExactETHForTokens(decimal amountInEth, string tokenAddress)
         {
             var amounts = await GetAmountsOut(Web3.Convert.ToWei(amountInEth, Nethereum.Util.UnitConversion.EthUnit.Ether), tokenAddress);

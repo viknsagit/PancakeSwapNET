@@ -751,17 +751,17 @@ namespace PancakeSwapNET
         /// <summary>
         /// Высчитывает указаный импакт цены
         /// </summary>
-        /// <param name="priceImpact">Процент(0.01)</param>
+        /// <param name="percent">Процент(0.01)</param>
         /// <returns></returns>
-        public async Task<decimal[]> CalculatePriceImpact(decimal priceImpact)
+        public async Task<decimal[]> CalculatePriceImpact(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
         {
             var reserves = await GetReserves();
-            var amount_traded_token = Web3.Convert.FromWei(reserves.Reserve0) * priceImpact / ((1 - priceImpact) * (1 - fee));
-            var amount_traded_token1 = Web3.Convert.FromWei(reserves.Reserve1) * priceImpact / ((1 - priceImpact) * (1 - fee));
+            var amount_traded_token = Web3.Convert.FromWei(reserves.Reserve0, firstTokenDecimals) * percent / ((1 - percent) * (1 - fee));
+            var amount_traded_token1 = Web3.Convert.FromWei(reserves.Reserve1, secondTokenDecimals) * percent / ((1 - percent) * (1 - fee));
             var amountInToken = amount_traded_token * (1 - fee);
             var amountInToken1 = amount_traded_token1 * (1 - fee);
-            var price_impact_trade_token = amountInToken / (Web3.Convert.FromWei(reserves.Reserve0) + amountInToken);
-            var price_impact_trade_token1 = amountInToken1 / (Web3.Convert.FromWei(reserves.Reserve1) + amountInToken1);
+            var price_impact_trade_token = amountInToken / (Web3.Convert.FromWei(reserves.Reserve0, firstTokenDecimals) + amountInToken);
+            var price_impact_trade_token1 = amountInToken1 / (Web3.Convert.FromWei(reserves.Reserve1, secondTokenDecimals) + amountInToken1);
             return new decimal[] { price_impact_trade_token, amount_traded_token, price_impact_trade_token1, amount_traded_token1 };
         }
 
