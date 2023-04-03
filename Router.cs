@@ -12,6 +12,7 @@ namespace PancakeSwapNET
         private readonly Web3 _web3;
         private readonly Account _account;
         private readonly Contract _contract;
+        public readonly Factory Factory;
 
         private const string _contractAbi = """
             [
@@ -1000,7 +1001,9 @@ namespace PancakeSwapNET
             _account.TransactionManager.UseLegacyAsDefault = true;
             _account.TransactionManager.DefaultGasPrice = 1000000000;
             _account.TransactionManager.DefaultGas = 450000;
+
             _contract = _web3.Eth.GetContract(_contractAbi, contractAddress);
+            Factory = new(_web3, GetFactoryAddress().GetAwaiter().GetResult());
         }
 
         /// <param name="chainURL">URL to connect to blockchain</param>
