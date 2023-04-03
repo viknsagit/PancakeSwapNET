@@ -749,10 +749,10 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
-        /// Высчитывает указаный импакт цены
+        /// Deducts the price impact from the specified percentage
         /// </summary>
         /// <param name="percent">Процент(0.01)</param>
-        /// <returns></returns>
+        /// <returns>Returns the percentage price and number of tokens to exchange for each token</returns>
         public async Task<decimal[]> CalculatePriceImpact(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
         {
             var reserves = await GetReserves();

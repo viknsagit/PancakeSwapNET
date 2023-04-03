@@ -2,6 +2,7 @@
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using PancakeSwapNET.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -993,6 +994,9 @@ namespace PancakeSwapNET
             ]
             """;
 
+        /// <param name="chainURL">URL to connect to blockchain</param>
+        /// <param name="contractAddress">PancakeSwap contract address</param>
+        /// <param name="primaryKey">Wallet primary key from which the functions will be used</param>
         public Router(string chainURL, string contractAddress, string primaryKey)
         {
             _account = new(primaryKey);
@@ -1004,8 +1008,23 @@ namespace PancakeSwapNET
             _contract = _web3.Eth.GetContract(_contractAbi, contractAddress);
         }
 
+        /// <param name="chainURL">URL to connect to blockchain</param>
+        /// <param name="contractAddress">PancakeSwap contract address</param>
+        /// <param name="primaryKey">Wallet primary key from which the functions will be used</param>
+        /// <param name="gasSettings"></param>
+        public Router(string chainURL, string contractAddress, string primaryKey, GasSettings gasSettings)
+        {
+            _account = new(primaryKey);
+            _web3 = new(_account, chainURL);
+            //Разобраться с газом
+            _account.TransactionManager.UseLegacyAsDefault = true;
+            _account.TransactionManager.DefaultGasPrice = gasSettings.gasPrice;
+            _account.TransactionManager.DefaultGas = gasSettings.gasLimit;
+            _contract = _web3.Eth.GetContract(_contractAbi, contractAddress);
+        }
+
         /// <summary>
-        /// Возвращает (пары) отношение токена к другому токену (например: WETH к SMT)
+        /// Returns (pair) the relationship of a token to another token
         /// </summary>
         /// <param name="amountToSell"></param>
         /// <param name="token1"></param>
@@ -1019,7 +1038,7 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
-        /// Возвращает (пары) отношение WETH к другому токену (например: WETH к SMT)
+        /// Returns (pair) the WETH relation to another token
         /// </summary>
         /// <param name="amountToSell"></param>
         /// <param name="tokenAddress"></param>
@@ -1059,6 +1078,12 @@ namespace PancakeSwapNET
             return address;
         }
 
+        /// <summary>
+        /// Receive as many output tokens as possible for an exact amount of BNB.
+        /// </summary>
+        /// <param name="amountInEth">Payable amount of input tokens.</param>
+        /// <param name="tokenAddress">The address of the token to which you want to exchange</param>
+        /// <returns></returns>
         public async Task<TransactionReceipt> SwapExactETHForTokens(decimal amountInEth, string tokenAddress)
         {
             var amounts = await GetAmountsOut(Web3.Convert.ToWei(amountInEth, Nethereum.Util.UnitConversion.EthUnit.Ether), tokenAddress);
@@ -1068,6 +1093,12 @@ namespace PancakeSwapNET
             return tx;
         }
 
+        /// <summary>
+        /// Receive as much BNB as possible for an exact amount of input tokens.
+        /// </summary>
+        /// <param name="amountInEth">Payable amount of input tokens.</param>
+        /// <param name="tokenAddress">The address of the token to which you want to exchange</param>
+        /// <returns></returns>
         public async Task<TransactionReceipt> SwapExactTokensForETH(decimal amountInEth, string tokenAddress)
         {
             var amountsout = await GetAmountsOut(DecimalToWei(amountInEth), tokenAddress, await GetWETHAddress());
@@ -1088,6 +1119,12 @@ namespace PancakeSwapNET
             return tx;
         }
 
+        /// <summary>
+        /// Receive an exact amount of ETH for as few input tokens as possible.
+        /// </summary>
+        /// <param name="amountInEth">Payable amount of input tokens.</param>
+        /// <param name="tokenAddress">The address of the token to which you want to exchange</param>
+        /// <returns></returns>
         public async Task<TransactionReceipt> SwapTokensForExactETH(decimal amountInEth, string tokenAddress)
         {
             var amountsout = await GetAmountsOut(DecimalToWei(amountInEth), tokenAddress, await GetWETHAddress());
@@ -1098,6 +1135,12 @@ namespace PancakeSwapNET
             return tx;
         }
 
+        /// <summary>
+        /// Receive as much BNB as possible for an exact amount of tokens. Supports tokens that take a fee on transfer.
+        /// </summary>
+        /// <param name="amountInEth">Payable amount of input tokens.</param>
+        /// <param name="tokenAddress">The address of the token to which you want to exchange</param>
+        /// <returns></returns>
         public async Task<TransactionReceipt> SwapExactTokensForETHSupportingFeeOnTransferTokens(decimal amountInEth, string tokenAddress)
         {
             var amountsout = await GetAmountsOut(DecimalToWei(amountInEth), tokenAddress, await GetWETHAddress());
@@ -1109,10 +1152,17 @@ namespace PancakeSwapNET
             return tx;
         }
 
-        public async Task<TransactionReceipt> SwapExactTokensForTokens(decimal amount, string tokenAddress, string tokenAddress1)
+        /// <summary>
+        /// Receive as many output tokens as possible for an exact amount of input tokens.
+        /// </summary>
+        /// <param name="amountIn">Payable amount of input tokens.</param>
+        /// <param name="tokenAddress"></param>
+        /// <param name="tokenAddress1"></param>
+        /// <returns></returns>
+        public async Task<TransactionReceipt> SwapExactTokensForTokens(decimal amountIn, string tokenAddress, string tokenAddress1)
         {
-            var amountsout = await GetAmountsOut(DecimalToWei(amount), tokenAddress, tokenAddress1);
-            var amountsin = await GetAmountsIn(DecimalToWei(amount), tokenAddress, tokenAddress1);
+            var amountsout = await GetAmountsOut(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
+            var amountsin = await GetAmountsIn(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
             Console.WriteLine(Web3.Convert.FromWei(amountsin[0]));
             Function function = _contract.GetFunction("swapExactTokensForTokens");
             var input = function.CreateTransactionInput(_account.Address, amountsin[1], amountsout[1], new string[] { tokenAddress, tokenAddress1 }, _account.Address, DateTimeOffset.Now.AddMinutes(15).ToUnixTimeSeconds());

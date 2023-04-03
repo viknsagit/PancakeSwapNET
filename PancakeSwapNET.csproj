@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -14,6 +14,9 @@
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<Company>viknsagit</Company>
 	<PackageTags>.net,netherium,pancakeswap</PackageTags>
+	<FileVersion></FileVersion>
+	<Version>0.1</Version>
+	<Description>Library using Netherium to work with PancakeSwap contract functions.</Description>
 
   </PropertyGroup>
 
