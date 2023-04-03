@@ -3,16 +3,11 @@ using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using PancakeSwapNET.Classes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PancakeSwapNET
 {
-    internal class Router
+    public class Router
     {
         private readonly Web3 _web3;
         private readonly Account _account;

@@ -2,12 +2,7 @@
 using Nethereum.Contracts;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PancakeSwapNET
 {
@@ -745,7 +740,7 @@ namespace PancakeSwapNET
         {
             Function function = _contract.GetFunction("getReserves");
             var price = await function.CallAsync<GetReservesFunc>();
-            return await Task.FromResult(price);
+            return price;
         }
 
         /// <summary>
