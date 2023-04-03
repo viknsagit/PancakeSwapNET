@@ -15,7 +15,7 @@
 	<Company>viknsagit</Company>
 	<PackageTags>.net,netherium,pancakeswap</PackageTags>
 	<FileVersion></FileVersion>
-	<Version>0.2</Version>
+	<Version>0.3</Version>
 	<Description>Library using Netherium to work with PancakeSwap contract functions.</Description>
 
   </PropertyGroup>
