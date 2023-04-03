@@ -9,8 +9,10 @@ namespace PancakeSwapNET
     public class Pair
     {
         private readonly Web3 _web3;
-        private readonly Account _account;
-        private readonly Contract _contract;
+
+        //private readonly Account _account;
+        private Contract? _contract;
+
         private const decimal fee = 0.0025m;
 
         private const string _contractAbi = """
@@ -729,18 +731,75 @@ namespace PancakeSwapNET
             ]
             """;
 
-        public Pair(string pairAddress, string connectURL, string primaryKey)
+        //contract vars
+        public string Factory
+        { get { return factory!; } }
+
+        private string? factory;
+
+        public string Token0
+        { get { return token0!; } }
+
+        private string? token0;
+
+        public string Token1
+        { get { return token1!; } }
+
+        private string? token1;
+
+        public Pair(Web3 web3)
         {
-            _account = new(primaryKey);
-            _web3 = new(_account, connectURL);
-            _contract = _web3.Eth.GetContract(_contractAbi, pairAddress);
+            _web3 = web3;
         }
 
-        public async Task<GetReservesFunc> GetReserves()
+        public async Task InitPair(string pairAddress)
         {
-            Function function = _contract.GetFunction("getReserves");
-            var price = await function.CallAsync<GetReservesFunc>();
-            return price;
+            _contract = _web3.Eth.GetContract(_contractAbi, pairAddress);
+            factory = await GetFactoryAddressAsync();
+            token0 = await GetToken0AddressAsync();
+            token1 = await GetToken1AddressAsync();
+        }
+
+        private async Task<string> GetFactoryAddressAsync()
+        {
+            Function function = _contract!.GetFunction("factory");
+            return await function.CallAsync<string>();
+        }
+
+        private async Task<string> GetToken0AddressAsync()
+        {
+            Function function = _contract!.GetFunction("token0");
+            return await function.CallAsync<string>();
+        }
+
+        private async Task<string> GetToken1AddressAsync()
+        {
+            Function function = _contract!.GetFunction("token1");
+            return await function.CallAsync<string>();
+        }
+
+        public async Task<string> GetPrice0CumulativeLastAsync()
+        {
+            Function function = _contract!.GetFunction("price0CumulativeLast");
+            return await function.CallAsync<string>();
+        }
+
+        public async Task<string> GetPrice1CumulativeLastAsync()
+        {
+            Function function = _contract!.GetFunction("price1CumulativeLast");
+            return await function.CallAsync<string>();
+        }
+
+        public async Task<string> GetkLastAsync()
+        {
+            Function function = _contract!.GetFunction("kLast");
+            return await function.CallAsync<string>();
+        }
+
+        public async Task<GetReservesFunc> GetReservesAsync()
+        {
+            Function function = _contract!.GetFunction("getReserves");
+            return await function.CallAsync<GetReservesFunc>();
         }
 
         /// <summary>
@@ -748,9 +807,9 @@ namespace PancakeSwapNET
         /// </summary>
         /// <param name="percent">Процент(0.01)</param>
         /// <returns>Returns the percentage price and number of tokens to exchange for each token</returns>
-        public async Task<decimal[]> CalculatePriceImpact(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
+        public async Task<decimal[]> CalculatePriceImpactAsync(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
         {
-            var reserves = await GetReserves();
+            var reserves = await GetReservesAsync();
             var amount_traded_token = Web3.Convert.FromWei(reserves.Reserve0, firstTokenDecimals) * percent / ((1 - percent) * (1 - fee));
             var amount_traded_token1 = Web3.Convert.FromWei(reserves.Reserve1, secondTokenDecimals) * percent / ((1 - percent) * (1 - fee));
             var amountInToken = amount_traded_token * (1 - fee);
