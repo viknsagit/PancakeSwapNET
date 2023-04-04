@@ -792,22 +792,22 @@ namespace PancakeSwapNET
             return await function.CallAsync<string>();
         }
 
-        public async Task<string> GetPrice0CumulativeLastAsync()
+        public async Task<BigInteger> GetPrice0CumulativeLastAsync()
         {
             Function function = _contract!.GetFunction("price0CumulativeLast");
-            return await function.CallAsync<string>();
+            return await function.CallAsync<BigInteger>();
         }
 
-        public async Task<string> GetPrice1CumulativeLastAsync()
+        public async Task<BigInteger> GetPrice1CumulativeLastAsync()
         {
             Function function = _contract!.GetFunction("price1CumulativeLast");
-            return await function.CallAsync<string>();
+            return await function.CallAsync<BigInteger>();
         }
 
-        public async Task<string> GetkLastAsync()
+        public async Task<BigInteger> GetkLastAsync()
         {
             Function function = _contract!.GetFunction("kLast");
-            return await function.CallAsync<string>();
+            return await function.CallAsync<BigInteger>();
         }
 
         public async Task<GetReservesFunc> GetReservesAsync()
@@ -819,7 +819,7 @@ namespace PancakeSwapNET
         /// <summary>
         /// Deducts the price impact from the specified percentage
         /// </summary>
-        /// <param name="percent">Процент(0.01)</param>
+        /// <param name="percent">Percent (0.01)</param>
         /// <returns>Returns the percentage price and number of tokens to exchange for each token</returns>
         public async Task<decimal[]> CalculatePriceImpactAsync(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
         {
