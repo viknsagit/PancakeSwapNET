@@ -751,14 +751,27 @@ namespace PancakeSwapNET
             _web3 = web3;
         }
 
+        /// <summary>
+        /// Initialize pair
+        /// </summary>
+        /// <param name="pairAddress"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task InitPair(string pairAddress)
         {
             if (_web3 is null)
                 throw new Exception("Web3 not initialized");
             _contract = _web3.Eth.GetContract(_contractAbi, pairAddress);
+
             factory = await GetFactoryAddressAsync();
+            if (String.IsNullOrEmpty(factory))
+                throw new Exception("Wrong pair address");
             token0 = await GetToken0AddressAsync();
+            if (String.IsNullOrEmpty(token0))
+                throw new Exception("Wrong pair address");
             token1 = await GetToken1AddressAsync();
+            if (String.IsNullOrEmpty(token1))
+                throw new Exception("Wrong pair address");
         }
 
         private async Task<string> GetFactoryAddressAsync()
