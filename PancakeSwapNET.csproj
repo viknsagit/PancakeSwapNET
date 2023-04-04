@@ -11,6 +11,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<RepositoryType>git</RepositoryType>
+	 <IncludeSymbols>true</IncludeSymbols>
+	 <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<Company>viknsagit</Company>
 	<PackageTags>.net,netherium,pancakeswap</PackageTags>

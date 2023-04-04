@@ -8,9 +8,8 @@ namespace PancakeSwapNET
 {
     public class Pair
     {
-        private readonly Web3 _web3;
+        private readonly Web3? _web3;
 
-        //private readonly Account _account;
         private Contract? _contract;
 
         private const decimal fee = 0.0025m;
@@ -754,6 +753,8 @@ namespace PancakeSwapNET
 
         public async Task InitPair(string pairAddress)
         {
+            if (_web3 is null)
+                throw new Exception("Web3 not initialized");
             _contract = _web3.Eth.GetContract(_contractAbi, pairAddress);
             factory = await GetFactoryAddressAsync();
             token0 = await GetToken0AddressAsync();
