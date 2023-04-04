@@ -10,7 +10,7 @@ namespace PancakeSwapNET.Classes
 
         public GasSettings(BigInteger gasLimitInWei, BigInteger gasPrice)
         {
-            this.gasLimit = gasLimitInWei;
+            gasLimit = gasLimitInWei;
             this.gasPrice = gasPrice;
         }
 

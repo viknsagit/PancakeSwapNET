@@ -248,7 +248,10 @@ namespace PancakeSwapNET
         public async Task<string> GetPairAddressByTokensAsync(string token0Address, string token1Address)
         {
             Function function = _contract.GetFunction("getPair");
-            return await function.CallAsync<string>(token0Address, token1Address);
+            string address = await function.CallAsync<string>(token0Address, token1Address);
+            if (address == "0x0000000000000000000000000000000000000000")
+                throw new Exception("Incorrect token addresses");
+            return address;
         }
     }
 }

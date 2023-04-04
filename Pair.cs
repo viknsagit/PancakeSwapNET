@@ -764,32 +764,35 @@ namespace PancakeSwapNET
             _contract = _web3.Eth.GetContract(_contractAbi, pairAddress);
 
             factory = await GetFactoryAddressAsync();
-            if (String.IsNullOrEmpty(factory))
-                throw new Exception("Wrong pair address");
             token0 = await GetToken0AddressAsync();
-            if (String.IsNullOrEmpty(token0))
-                throw new Exception("Wrong pair address");
             token1 = await GetToken1AddressAsync();
-            if (String.IsNullOrEmpty(token1))
-                throw new Exception("Wrong pair address");
         }
 
         private async Task<string> GetFactoryAddressAsync()
         {
             Function function = _contract!.GetFunction("factory");
-            return await function.CallAsync<string>();
+            string address = await function.CallAsync<string>();
+            if (String.IsNullOrEmpty(address))
+                throw new Exception("Incorrect pair address");
+            return address;
         }
 
         private async Task<string> GetToken0AddressAsync()
         {
             Function function = _contract!.GetFunction("token0");
-            return await function.CallAsync<string>();
+            string address = await function.CallAsync<string>();
+            if (String.IsNullOrEmpty(address))
+                throw new Exception("Incorrect pair address");
+            return address;
         }
 
         private async Task<string> GetToken1AddressAsync()
         {
             Function function = _contract!.GetFunction("token1");
-            return await function.CallAsync<string>();
+            string address = await function.CallAsync<string>();
+            if (String.IsNullOrEmpty(address))
+                throw new Exception("Incorrect pair address");
+            return address;
         }
 
         public async Task<BigInteger> GetPrice0CumulativeLastAsync()
