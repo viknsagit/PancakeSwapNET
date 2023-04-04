@@ -227,16 +227,28 @@ namespace PancakeSwapNET
             _contract = _contract = _web3.Eth.GetContract(_contractAbi, ContractAddress);
         }
 
-        public async Task<string> FeeTo()
+        public async Task<string> FeeToAsync()
         {
             Function function = _contract.GetFunction("feeTo");
             return await function.CallAsync<string>();
         }
 
-        public async Task<string> FeeToSetter()
+        public async Task<string> FeeToSetterAsync()
         {
             Function function = _contract.GetFunction("feeToSetter");
             return await function.CallAsync<string>();
+        }
+
+        public async Task<int> GetAllPairsLengthAsync()
+        {
+            Function function = _contract.GetFunction("allPairsLength");
+            return await function.CallAsync<int>();
+        }
+
+        public async Task<string> GetPairAddressByTokensAsync(string token0Address, string token1Address)
+        {
+            Function function = _contract.GetFunction("getPair");
+            return await function.CallAsync<string>(token0Address, token1Address);
         }
     }
 }
