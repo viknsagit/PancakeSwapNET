@@ -220,6 +220,14 @@ namespace PancakeSwapNET
             ]
             """;
 
+        /// <summary>
+        /// Constructor for Factory class.
+        /// </summary>
+        /// <param name="web3">Web3 object</param>
+        /// <param name="address">Contract address</param>
+        /// <returns>
+        /// Factory object
+        /// </returns>
         public Factory(Web3 web3, string address)
         {
             _web3 = web3;
@@ -245,6 +253,12 @@ namespace PancakeSwapNET
             return await function.CallAsync<int>();
         }
 
+        /// <summary>
+        /// Gets the address of the pair by token addresses.
+        /// </summary>
+        /// <param name="token0Address">The address of the first token.</param>
+        /// <param name="token1Address">The address of the second token.</param>
+        /// <returns>The address of the pair.</returns>
         public async Task<string> GetPairAddressByTokensAsync(string token0Address, string token1Address)
         {
             Function function = _contract.GetFunction("getPair");
