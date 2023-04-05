@@ -990,9 +990,15 @@ namespace PancakeSwapNET
             ]
             """;
 
-        /// <param name="chainURL">URL to connect to blockchain</param>
-        /// <param name="contractAddress">PancakeSwap contract address</param>
-        /// <param name="primaryKey">Wallet primary key from which the functions will be used</param>
+        /// <summary>
+        /// Constructor for Router class. Initializes web3, account and contract objects.
+        /// </summary>
+        /// <param name="chainURL">URL of the blockchain</param>
+        /// <param name="contractAddress">Address of the contract</param>
+        /// <param name="primaryKey">Primary key of the account</param>
+        /// <returns>
+        /// Instance of Router class
+        /// </returns>
         public Router(string chainURL, string contractAddress, string primaryKey)
         {
             _account = new(primaryKey);
@@ -1007,10 +1013,16 @@ namespace PancakeSwapNET
             Factory = new(_web3, GetFactoryAddressAsync().GetAwaiter().GetResult());
         }
 
-        /// <param name="chainURL">URL to connect to blockchain</param>
-        /// <param name="contractAddress">PancakeSwap contract address</param>
-        /// <param name="primaryKey">Wallet primary key from which the functions will be used</param>
-        /// <param name="gasSettings"></param>
+        /// <summary>
+        /// Constructor for Router class. Initializes web3, account and contract.
+        /// </summary>
+        /// <param name="chainURL">URL of the blockchain</param>
+        /// <param name="contractAddress">Address of the contract</param>
+        /// <param name="primaryKey">Primary key of the account</param>
+        /// <param name="gasSettings">Gas settings for the transaction</param>
+        /// <returns>
+        /// Instance of Router class
+        /// </returns>
         public Router(string chainURL, string contractAddress, string primaryKey, GasSettings gasSettings)
         {
             _account = new(primaryKey);
@@ -1025,6 +1037,11 @@ namespace PancakeSwapNET
             Factory = new(_web3, GetFactoryAddressAsync().GetAwaiter().GetResult());
         }
 
+        /// <summary>
+        /// Gets a Pair object for the given pair address.
+        /// </summary>
+        /// <param name="pairAddress">The address of the pair.</param>
+        /// <returns>A Pair object for the given pair address.</returns>
         public async Task<Pair> GetPairAsync(string pairAddress)
         {
             Pair pair = new(_web3);
@@ -1033,12 +1050,27 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
-        /// Returns (pair) the relationship of a token to another token
+        /// Gets the Pair object for the given token addresses.
+        /// </summary>
+        /// <param name="token0Address">The address of the first token.</param>
+        /// <param name="token1Address">The address of the second token.</param>
+        /// <returns>
+        /// The Pair object for the given token addresses.
+        /// </returns>
+        public async Task<Pair> GetPairAsync(string token0Address, string token1Address)
+        {
+            Pair pair = new(_web3);
+            await pair.InitPair(await Factory.GetPairAddressByTokensAsync(token0Address, token1Address));
+            return pair;
+        }
+
+        /// <summary>
+        /// Get (pair) the relationship of a token to another token
         /// </summary>
         /// <param name="amountToSell"></param>
-        /// <param name="token1"></param>
-        /// <param name="token2"></param>
-        /// <returns></returns>
+        /// <param name="tokenAddress"></param>
+        /// <param name="tokenAddress1"></param>
+        /// <returns>Returns (pair) the relationship of a token to another token</returns>
         public async Task<List<BigInteger>> GetAmountsOutAsync(BigInteger amountToSell, string tokenAddress, string tokenAddress1)
         {
             Function function = _contract.GetFunction("getAmountsOut");
@@ -1047,11 +1079,11 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
-        /// Returns (pair) the WETH relation to another token
+        /// Get (pair) the relationship of a token to another token
         /// </summary>
         /// <param name="amountToSell"></param>
         /// <param name="tokenAddress"></param>
-        /// <returns></returns>
+        /// <returns>Returns (pair) the WETH relation to another token</returns>
         public async Task<List<BigInteger>> GetAmountsOutAsync(BigInteger amountToSell, string tokenAddress)
         {
             Function function = _contract.GetFunction("getAmountsOut");
@@ -1073,12 +1105,20 @@ namespace PancakeSwapNET
             return price;
         }
 
+        /// <summary>
+        /// Gets the WETH address from the contract.
+        /// </summary>
+        /// <returns>The WETH address.</returns>
         public async Task<string> GetWETHAddressAsync()
         {
             Function function = _contract.GetFunction("WETH");
             return await function.CallAsync<string>();
         }
 
+        /// <summary>
+        /// Gets the address of the factory contract.
+        /// </summary>
+        /// <returns>The address of the factory contract.</returns>
         public async Task<string> GetFactoryAddressAsync()
         {
             Function function = _contract.GetFunction("factory");
@@ -1090,7 +1130,7 @@ namespace PancakeSwapNET
         /// </summary>
         /// <param name="amountInEth">Payable amount of input tokens.</param>
         /// <param name="tokenAddress">The address of the token to which you want to exchange</param>
-        /// <returns></returns>
+        /// <returns>As many output tokens as possible for an exact amount of BNB.</returns>
         public async Task<TransactionReceipt> SwapExactETHForTokensAsync(decimal amountInEth, string tokenAddress)
         {
             var amounts = await GetAmountsOutAsync(Web3.Convert.ToWei(amountInEth, Nethereum.Util.UnitConversion.EthUnit.Ether), tokenAddress);

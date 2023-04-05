@@ -1,7 +1,6 @@
 ﻿using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
 using Nethereum.Web3;
-using Nethereum.Web3.Accounts;
 using System.Numerics;
 
 namespace PancakeSwapNET
@@ -9,10 +8,7 @@ namespace PancakeSwapNET
     public class Pair
     {
         private readonly Web3? _web3;
-
         private Contract? _contract;
-
-        private const decimal fee = 0.0025m;
 
         private const string _contractAbi = """
                         [
@@ -731,6 +727,8 @@ namespace PancakeSwapNET
             """;
 
         //contract vars
+        public const decimal fee = 0.0025m;
+
         public string Factory
         { get { return factory!; } }
 
@@ -752,11 +750,10 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
-        /// Initialize pair
+        /// Initializes a new instance of the Pair class with the given address.
         /// </summary>
-        /// <param name="pairAddress"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        /// <param name="pairAddress">The address of the pair.</param>
+        /// <returns>A Task that represents the asynchronous operation.</returns>
         public async Task InitPair(string pairAddress)
         {
             if (_web3 is null)
@@ -768,6 +765,10 @@ namespace PancakeSwapNET
             token1 = await GetToken1AddressAsync();
         }
 
+        /// <summary>
+        /// Gets the address of the factory contract.
+        /// </summary>
+        /// <returns>The address of the factory contract.</returns>
         private async Task<string> GetFactoryAddressAsync()
         {
             Function function = _contract!.GetFunction("factory");
@@ -777,6 +778,10 @@ namespace PancakeSwapNET
             return address;
         }
 
+        /// <summary>
+        /// Gets the address of the token0 from the contract.
+        /// </summary>
+        /// <returns>The address of the token0.</returns>
         private async Task<string> GetToken0AddressAsync()
         {
             Function function = _contract!.GetFunction("token0");
@@ -786,6 +791,10 @@ namespace PancakeSwapNET
             return address;
         }
 
+        /// <summary>
+        /// Gets the address of the token1 from the contract.
+        /// </summary>
+        /// <returns>The address of the token1.</returns>
         private async Task<string> GetToken1AddressAsync()
         {
             Function function = _contract!.GetFunction("token1");
@@ -813,6 +822,12 @@ namespace PancakeSwapNET
             return await function.CallAsync<BigInteger>();
         }
 
+        /// <summary>
+        /// Asynchronously calls the getReserves function on the smart contract.
+        /// </summary>
+        /// <returns>
+        /// A GetReservesFunc object containing the result of the function call.
+        /// </returns>
         public async Task<GetReservesFunc> GetReservesAsync()
         {
             Function function = _contract!.GetFunction("getReserves");
@@ -823,6 +838,8 @@ namespace PancakeSwapNET
         /// Deducts the price impact from the specified percentage
         /// </summary>
         /// <param name="percent">Percent (0.01)</param>
+        /// <param name="firstTokenDecimals"></param>
+        /// <param name="secondTokenDecimals"></param>
         /// <returns>Returns the percentage price and number of tokens to exchange for each token</returns>
         public async Task<decimal[]> CalculatePriceImpactAsync(decimal percent, int firstTokenDecimals = 18, int secondTokenDecimals = 18)
         {

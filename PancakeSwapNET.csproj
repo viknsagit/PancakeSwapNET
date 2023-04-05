@@ -19,6 +19,8 @@
 	<FileVersion></FileVersion>
 	<Version>0.4</Version>
 	<Description>Library using Netherium to work with PancakeSwap contract functions.</Description>
+	<PackageProjectUrl>https://github.com/viknsagit/PancakeSwapNET</PackageProjectUrl>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 
   </PropertyGroup>
 
