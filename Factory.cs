@@ -236,22 +236,13 @@ namespace PancakeSwapNET
         }
 
         public async Task<string> FeeToAsync()
-        {
-            Function function = _contract.GetFunction("feeTo");
-            return await function.CallAsync<string>();
-        }
+        => await _contract.GetFunction("feeTo").CallAsync<string>();
 
         public async Task<string> FeeToSetterAsync()
-        {
-            Function function = _contract.GetFunction("feeToSetter");
-            return await function.CallAsync<string>();
-        }
+            => await _contract.GetFunction("feeToSetter").CallAsync<string>();
 
         public async Task<int> GetAllPairsLengthAsync()
-        {
-            Function function = _contract.GetFunction("allPairsLength");
-            return await function.CallAsync<int>();
-        }
+            => await _contract.GetFunction("allPairsLength").CallAsync<int>();
 
         /// <summary>
         /// Gets the address of the pair by token addresses.
@@ -263,9 +254,7 @@ namespace PancakeSwapNET
         {
             Function function = _contract.GetFunction("getPair");
             string address = await function.CallAsync<string>(token0Address, token1Address);
-            if (address == "0x0000000000000000000000000000000000000000")
-                throw new Exception("Incorrect token addresses");
-            return address;
+            return address == "0x0000000000000000000000000000000000000000" ? throw new Exception("Incorrect token addresses") : address;
         }
     }
 }

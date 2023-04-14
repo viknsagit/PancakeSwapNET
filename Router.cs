@@ -1,5 +1,7 @@
 ﻿using Nethereum.Contracts;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.RPC.HostWallet;
+using Nethereum.Signer;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using PancakeSwapNET.Classes;
@@ -1014,6 +1016,28 @@ namespace PancakeSwapNET
         }
 
         /// <summary>
+        /// Constructor for Router class. Initializes web3, account, contract and factory.
+        /// </summary>
+        /// <param name="chainURL">URL of the blockchain</param>
+        /// <param name="contractAddress">Address of the contract</param>
+        /// <returns>
+        /// Instance of Router class.
+        /// </returns>
+        public Router(string chainURL, string contractAddress)
+        {
+            _account = new(EthECKey.GenerateKey());
+            _web3 = new(_account, chainURL);
+
+            //Разобраться с газом
+            _account.TransactionManager.UseLegacyAsDefault = true;
+            _account.TransactionManager.DefaultGasPrice = 1000000000;
+            _account.TransactionManager.DefaultGas = 450000;
+
+            _contract = _web3.Eth.GetContract(_contractAbi, contractAddress);
+            Factory = new(_web3, GetFactoryAddressAsync().GetAwaiter().GetResult());
+        }
+
+        /// <summary>
         /// Constructor for Router class. Initializes web3, account and contract.
         /// </summary>
         /// <param name="chainURL">URL of the blockchain</param>
@@ -1026,6 +1050,29 @@ namespace PancakeSwapNET
         public Router(string chainURL, string contractAddress, string primaryKey, GasSettings gasSettings)
         {
             _account = new(primaryKey);
+            _web3 = new(_account, chainURL);
+
+            //Разобраться с газом
+            _account.TransactionManager.UseLegacyAsDefault = true;
+            _account.TransactionManager.DefaultGasPrice = gasSettings.gasPrice;
+            _account.TransactionManager.DefaultGas = gasSettings.gasLimit;
+
+            _contract = _web3.Eth.GetContract(_contractAbi, contractAddress);
+            Factory = new(_web3, GetFactoryAddressAsync().GetAwaiter().GetResult());
+        }
+
+        /// <summary>
+        /// Constructor for Router class. Initializes web3, account, contract and factory.
+        /// </summary>
+        /// <param name="chainURL">URL of the blockchain</param>
+        /// <param name="contractAddress">Address of the contract</param>
+        /// <param name="gasSettings">Gas settings for the transaction</param>
+        /// <returns>
+        /// Instance of Router class
+        /// </returns>
+        public Router(string chainURL, string contractAddress, GasSettings gasSettings)
+        {
+            _account = new(EthECKey.GenerateKey());
             _web3 = new(_account, chainURL);
 
             //Разобраться с газом
