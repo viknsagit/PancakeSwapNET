@@ -1256,6 +1256,15 @@ namespace PancakeSwapNET
             return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
         }
 
+        public async Task<TransactionReceipt> SwapTokensForExactTokensAsync(decimal amountIn, string tokenAddress, string tokenAddress1)
+        {
+            var amountsout = await GetAmountsOutAsync(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
+            var amountsin = await GetAmountsInAsync(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
+            Function function = _contract.GetFunction("swapTokensForExactTokens");
+            var input = function.CreateTransactionInput(_account.Address, amountsin[1], amountsout[1], new string[] { tokenAddress, tokenAddress1 }, _account.Address, DateTimeOffset.Now.AddMinutes(15).ToUnixTimeSeconds());
+            return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
+        }
+
         private static BigInteger DecimalToWei(decimal amount)
         {
             return Web3.Convert.ToWei(amount, Nethereum.Util.UnitConversion.EthUnit.Ether);
