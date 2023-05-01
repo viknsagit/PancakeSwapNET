@@ -837,7 +837,7 @@ namespace PancakeSwapNET
         /// <summary>
         /// Deducts the price impact from the specified percentage
         /// </summary>
-        /// <param name="percent">Percent (0.01)</param>
+        /// <param name="percent">Percent (0.01 = 1%)</param>
         /// <param name="firstTokenDecimals"></param>
         /// <param name="secondTokenDecimals"></param>
         /// <returns>Returns the percentage price and number of tokens to exchange for each token</returns>

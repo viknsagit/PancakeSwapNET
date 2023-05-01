@@ -1138,7 +1138,14 @@ namespace PancakeSwapNET
             return price;
         }
 
-        public async Task<BigInteger> GetAmountInAsync(decimal amountOut, decimal reserveIn, decimal reserveOut)
+        public async Task<BigInteger> GetAmountOutAsync(BigInteger amountIn, BigInteger reserveIn, BigInteger reserveOut)
+        {
+            Function function = _contract.GetFunction("getAmountOut");
+            BigInteger price = await function.CallAsync<BigInteger>(amountIn, reserveIn, reserveOut);
+            return price;
+        }
+
+        public async Task<BigInteger> GetAmountInAsync(BigInteger amountOut, BigInteger reserveIn, BigInteger reserveOut)
         {
             Function function = _contract.GetFunction("getAmountIn");
             BigInteger price = await function.CallAsync<BigInteger>(amountOut, reserveIn, reserveOut);
@@ -1201,15 +1208,6 @@ namespace PancakeSwapNET
             return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
         }
 
-        public async Task<TransactionReceipt> SwapExactTokensForETHWithDecimalsAsync(decimal amount, string tokenAddress, int decimalPlacesFromUnit)
-        {
-            var amountsout = await GetAmountsOutAsync(Web3.Convert.ToWei(amount, decimalPlacesFromUnit), tokenAddress, await GetWETHAddressAsync());
-            var amountsin = await GetAmountsInAsync(Web3.Convert.ToWei(amount, decimalPlacesFromUnit), tokenAddress, await GetWETHAddressAsync());
-            Function function = _contract.GetFunction("swapExactTokensForETH");
-            var input = function.CreateTransactionInput(_account.Address, amountsin[1], amountsout[1], new string[] { tokenAddress, await GetWETHAddressAsync() }, _account.Address, DateTimeOffset.Now.AddMinutes(15).ToUnixTimeSeconds());
-            return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
-        }
-
         /// <summary>
         /// Receive an exact amount of ETH for as few input tokens as possible.
         /// </summary>
@@ -1256,12 +1254,10 @@ namespace PancakeSwapNET
             return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
         }
 
-        public async Task<TransactionReceipt> SwapTokensForExactTokensAsync(decimal amountIn, string tokenAddress, string tokenAddress1)
+        public async Task<TransactionReceipt> SwapExactTokensForTokensManualAsync(BigInteger amountsIn, BigInteger amountsOut, string tokenAddress, string tokenAddress1)
         {
-            var amountsout = await GetAmountsOutAsync(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
-            var amountsin = await GetAmountsInAsync(DecimalToWei(amountIn), tokenAddress, tokenAddress1);
-            Function function = _contract.GetFunction("swapTokensForExactTokens");
-            var input = function.CreateTransactionInput(_account.Address, amountsin[1], amountsout[1], new string[] { tokenAddress, tokenAddress1 }, _account.Address, DateTimeOffset.Now.AddMinutes(15).ToUnixTimeSeconds());
+            Function function = _contract.GetFunction("swapExactTokensForTokens");
+            var input = function.CreateTransactionInput(_account.Address, amountsIn, amountsOut, new string[] { tokenAddress, tokenAddress1 }, _account.Address, DateTimeOffset.Now.AddMinutes(15).ToUnixTimeSeconds());
             return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
         }
 
