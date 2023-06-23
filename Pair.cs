@@ -804,18 +804,30 @@ namespace PancakeSwapNET
             return address;
         }
 
+        /// <summary>
+        /// Gets the cumulative last price of the 0th asset.
+        /// </summary>
+        /// <returns>The cumulative last price of the 0th asset.</returns>
         public async Task<BigInteger> GetPrice0CumulativeLastAsync()
         {
             Function function = _contract!.GetFunction("price0CumulativeLast");
             return await function.CallAsync<BigInteger>();
         }
 
+        /// <summary>
+        /// Gets the cumulative last price of the first asset.
+        /// </summary>
+        /// <returns>The cumulative last price of the first asset.</returns>
         public async Task<BigInteger> GetPrice1CumulativeLastAsync()
         {
             Function function = _contract!.GetFunction("price1CumulativeLast");
             return await function.CallAsync<BigInteger>();
         }
 
+        /// <summary>
+        /// Gets the last k value from the contract.
+        /// </summary>
+        /// <returns>The last k value.</returns>
         public async Task<BigInteger> GetkLastAsync()
         {
             Function function = _contract!.GetFunction("kLast");

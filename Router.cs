@@ -1138,6 +1138,13 @@ namespace PancakeSwapNET
             return price;
         }
 
+        /// <summary>
+        /// Gets the amount out from the given amount in, reserve in and reserve out.
+        /// </summary>
+        /// <param name="amountIn">The amount in.</param>
+        /// <param name="reserveIn">The reserve in.</param>
+        /// <param name="reserveOut">The reserve out.</param>
+        /// <returns>The amount out.</returns>
         public async Task<BigInteger> GetAmountOutAsync(BigInteger amountIn, BigInteger reserveIn, BigInteger reserveOut)
         {
             Function function = _contract.GetFunction("getAmountOut");
@@ -1145,6 +1152,13 @@ namespace PancakeSwapNET
             return price;
         }
 
+        /// <summary>
+        /// Gets the amount of the input token given the amount of the output token, the reserve of the input token and the reserve of the output token.
+        /// </summary>
+        /// <param name="amountOut">The amount of the output token.</param>
+        /// <param name="reserveIn">The reserve of the input token.</param>
+        /// <param name="reserveOut">The reserve of the output token.</param>
+        /// <returns>The amount of the input token.</returns>
         public async Task<BigInteger> GetAmountInAsync(BigInteger amountOut, BigInteger reserveIn, BigInteger reserveOut)
         {
             Function function = _contract.GetFunction("getAmountIn");
@@ -1152,6 +1166,15 @@ namespace PancakeSwapNET
             return price;
         }
 
+        /// <summary>
+        /// Gets the amounts in the specified token addresses.
+        /// </summary>
+        /// <param name="amount">The amount.</param>
+        /// <param name="tokenAddress">The token address.</param>
+        /// <param name="tokenAddress1">The token address 1.</param>
+        /// <returns>
+        /// A list of BigIntegers representing the amounts in the specified token addresses.
+        /// </returns>
         public async Task<List<BigInteger>> GetAmountsInAsync(BigInteger amount, string tokenAddress, string tokenAddress1)
         {
             Function function = _contract.GetFunction("getAmountsIn");
@@ -1254,6 +1277,14 @@ namespace PancakeSwapNET
             return await _account.TransactionManager.SendTransactionAndWaitForReceiptAsync(input);
         }
 
+        /// <summary>
+        /// Executes a swap of tokens for tokens with exact amounts specified.
+        /// </summary>
+        /// <param name="amountsIn">The amount of tokens to be swapped in.</param>
+        /// <param name="amountsOut">The amount of tokens to be swapped out.</param>
+        /// <param name="tokenAddress">The address of the token to be swapped in.</param>
+        /// <param name="tokenAddress1">The address of the token to be swapped out.</param>
+        /// <returns>A transaction receipt.</returns>
         public async Task<TransactionReceipt> SwapExactTokensForTokensManualAsync(BigInteger amountsIn, BigInteger amountsOut, string tokenAddress, string tokenAddress1)
         {
             Function function = _contract.GetFunction("swapExactTokensForTokens");

@@ -7,6 +7,10 @@ namespace PancakeSwapNET
     {
         private readonly Web3 _web3;
         private readonly Contract _contract;
+
+        /// <summary>
+        /// Represents the address of a contract.
+        /// </summary>
         public readonly string ContractAddress;
 
         private const string _contractAbi = """
@@ -235,14 +239,25 @@ namespace PancakeSwapNET
             _contract = _contract = _web3.Eth.GetContract(_contractAbi, ContractAddress);
         }
 
+        /// <summary>
+        /// Asynchronously calls the 'feeTo' function on the contract.
+        /// </summary>
+        /// <returns>A Task that will return the 'feeTo' value.</returns>
         public async Task<string> FeeToAsync()
-        => await _contract.GetFunction("feeTo").CallAsync<string>();
+                => await _contract.GetFunction("feeTo").CallAsync<string>();
 
+        /// <summary>
+        /// Asynchronously calls the "feeToSetter" function on the smart contract and returns the result.
+        /// </summary>
         public async Task<string> FeeToSetterAsync()
-            => await _contract.GetFunction("feeToSetter").CallAsync<string>();
+                    => await _contract.GetFunction("feeToSetter").CallAsync<string>();
 
+        /// <summary>
+        /// Asynchronously gets the length of all pairs.
+        /// </summary>
+        /// <returns>The length of all pairs.</returns>
         public async Task<int> GetAllPairsLengthAsync()
-            => await _contract.GetFunction("allPairsLength").CallAsync<int>();
+                    => await _contract.GetFunction("allPairsLength").CallAsync<int>();
 
         /// <summary>
         /// Gets the address of the pair by token addresses.

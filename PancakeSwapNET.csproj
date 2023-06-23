@@ -17,7 +17,7 @@
 	<Company>viknsagit</Company>
 	<PackageTags>.net,netherium,pancakeswap</PackageTags>
 	<FileVersion></FileVersion>
-	<Version>1.0.3</Version>
+	<Version>1.0.4</Version>
 	<Description>Library using Netherium to work with PancakeSwap contract functions.</Description>
 	<PackageProjectUrl>https://github.com/viknsagit/PancakeSwapNET</PackageProjectUrl>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
