@@ -339,8 +339,6 @@ Task<decimal[]> CalculatePriceImpactAsync(decimal percent, int firstTokenDecimal
 
 ---
 
-Давайте продолжим документацию для класса `GasSettings` из вашей библиотеки:
-
 ## GasSettings Class
 
 The `GasSettings` class represents gas-related settings that can be used in transactions on the Ethereum blockchain.
